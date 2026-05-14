@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Alles Gute zum Vatertag!</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      min-height: 100dvh;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Floating hearts ── */
+    .hearts { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .heart {
+      position: absolute; bottom: -50px;
+      animation: floatUp linear infinite; opacity: 0.18;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0.18; }
+      100% { transform: translateY(-110dvh) rotate(20deg); opacity: 0; }
+    }
+
+    /* ── Main content ── */
+    .content {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 9vw, 4rem);
+      color: #ffd700;
+      line-height: 1.15;
+      margin-bottom: 0.35em;
+      letter-spacing: 0.02em;
+      animation: glow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.2); }
+      to   { text-shadow: 0 0 40px rgba(255,215,0,0.9), 0 0 80px rgba(255,215,0,0.5); }
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 4vw, 1.4rem);
+      color: #c9d6df; margin-bottom: 2.5rem;
+      font-style: italic; opacity: 0.85;
+    }
+
+    /* ── Gift ── */
+    .gift-wrapper {
+      cursor: pointer; display: inline-block;
+      animation: wobble 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(255,100,100,0.45));
+      touch-action: manipulation;
+    }
+    .gift-wrapper:active {
+      animation: wobble-fast 0.5s ease-in-out infinite;
+      filter: drop-shadow(0 15px 40px rgba(255,100,100,0.75));
+    }
+    @media (hover: hover) {
+      .gift-wrapper:hover {
+        animation: wobble-fast 0.5s ease-in-out infinite;
+        filter: drop-shadow(0 15px 40px rgba(255,100,100,0.75));
+      }
+    }
+    @keyframes wobble {
+      0%   { transform: rotate(-6deg) scale(1); }
+      25%  { transform: rotate(6deg) scale(1.04); }
+      50%  { transform: rotate(-4deg) scale(1); }
+      75%  { transform: rotate(4deg) scale(1.02); }
+      100% { transform: rotate(-6deg) scale(1); }
+    }
+    @keyframes wobble-fast {
+      0%   { transform: rotate(-10deg) scale(1.05); }
+      25%  { transform: rotate(10deg) scale(1.1); }
+      50%  { transform: rotate(-8deg) scale(1.05); }
+      75%  { transform: rotate(8deg) scale(1.08); }
+      100% { transform: rotate(-10deg) scale(1.05); }
+    }
+
+    .gift-svg { width: clamp(160px, 42vw, 240px); height: auto; }
+
+    .click-hint {
+      margin-top: 1.4rem; color: #ffd700;
+      font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+      animation: pulse 1.8s ease-in-out infinite; letter-spacing: 0.06em;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.45; }
+      50%       { opacity: 1; }
+    }
+
+    /* ── Overlay ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300; opacity: 0; pointer-events: none;
+      transition: opacity 0.35s;
+      padding: 1rem;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+
+    .card {
+      background: linear-gradient(145deg, #fff8f0, #fff0e0);
+      border-radius: 22px;
+      padding: 1.6rem 1.4rem;
+      width: 100%;
+      max-width: 460px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.55);
+      transform: scale(0.6) rotate(-4deg);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+    .overlay.open .card { transform: scale(1) rotate(0deg); }
+    .card::before {
+      content: ''; position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700, #ff6b6b);
+      border-radius: 24px; z-index: -1; background-size: 300% 300%;
+      animation: borderAnim 3s linear infinite;
+    }
+    @keyframes borderAnim {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Intro */
+    #screen-intro .intro-emoji { font-size: 2.8rem; display: block; margin-bottom: 0.5rem; }
+    #screen-intro h2 { font-size: clamp(1.15rem, 4.5vw, 1.5rem); color: #c0392b; margin-bottom: 0.7rem; line-height: 1.3; }
+    #screen-intro p  { font-size: clamp(0.9rem, 3.5vw, 1rem); color: #5d4037; line-height: 1.6; margin-bottom: 1.2rem; }
+
+    /* Hangman */
+    #screen-hangman h2 { font-size: clamp(1.1rem, 4vw, 1.3rem); color: #c0392b; margin-bottom: 0.3rem; }
+
+    .hangman-drawing { margin: 0 auto 0.5rem; display: block; }
+
+    .word-display {
+      display: flex; gap: 6px; justify-content: center;
+      flex-wrap: wrap; margin: 0.6rem 0;
+    }
+    .letter-box {
+      width: clamp(28px, 8vw, 36px);
+      height: clamp(34px, 10vw, 44px);
+      border-bottom: 3px solid #c0392b;
+      display: flex; align-items: flex-end; justify-content: center;
+      font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+      font-weight: bold; color: #1a1a2e;
+      padding-bottom: 2px; transition: color 0.3s;
+    }
+    .letter-box.revealed { color: #c0392b; }
+
+    .wrong-letters {
+      min-height: 1.3rem; color: #e74c3c;
+      font-size: clamp(0.8rem, 3vw, 0.9rem);
+      margin-bottom: 0.5rem; letter-spacing: 0.1em;
+    }
+
+    .keyboard {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      justify-content: center;
+      max-width: 100%;
+      margin: 0 auto 0.5rem;
+    }
+    .key {
+      width: clamp(32px, 9vw, 38px);
+      height: clamp(36px, 10vw, 42px);
+      border-radius: 8px;
+      border: 2px solid #c0392b; background: white;
+      color: #c0392b; font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+      font-weight: bold; cursor: pointer;
+      transition: background 0.12s, transform 0.1s;
+      font-family: 'Georgia', serif;
+      touch-action: manipulation;
+    }
+    .key:active:not(:disabled),
+    .key:hover:not(:disabled) { background: #c0392b; color: white; transform: scale(1.1); }
+    .key:disabled { opacity: 0.22; cursor: not-allowed; transform: none; }
+    .key.wrong { background: #ffdddd; border-color: #e74c3c; }
+
+    .hint-text { font-size: clamp(0.78rem, 2.8vw, 0.88rem); color: #999; font-style: italic; margin-bottom: 0.3rem; }
+    .lives-text { font-size: clamp(0.82rem, 3vw, 0.95rem); color: #5d4037; margin-bottom: 0.25rem; }
+
+    /* Win / Lose */
+    #screen-win .win-emoji,
+    #screen-lose .lose-emoji { font-size: 2.8rem; display: block; margin-bottom: 0.4rem; }
+    #screen-win h2  { font-size: clamp(1.2rem, 4.5vw, 1.6rem); color: #c0392b; margin-bottom: 0.7rem; }
+    #screen-lose h2 { font-size: clamp(1.1rem, 4vw, 1.4rem); color: #c0392b; margin-bottom: 0.5rem; }
+    #screen-win p,
+    #screen-lose p  { font-size: clamp(0.9rem, 3.5vw, 1.05rem); color: #5d4037; line-height: 1.7; margin-bottom: 0.55rem; }
+    .signature { margin-top: 0.8rem; font-style: italic; font-size: clamp(0.95rem, 3.5vw, 1.1rem); color: #e74c3c; font-weight: bold; }
+
+    /* Buttons */
+    .btn {
+      margin-top: 0.9rem;
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border: none; border-radius: 50px;
+      padding: 0.75rem 1.8rem;
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      cursor: pointer; color: #1a1a2e; font-weight: bold;
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.04em; font-family: 'Georgia', serif;
+      touch-action: manipulation;
+      display: inline-block;
+    }
+    .btn:active,
+    .btn:hover { transform: scale(1.07); box-shadow: 0 5px 20px rgba(255,170,0,0.5); }
+    .btn-red { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+    .btn-row { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 0.9rem; }
+    .btn-row .btn { margin-top: 0; }
+
+    /* Confetti */
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+    .confetti-piece {
+      position: absolute; width: 10px; height: 10px;
+      top: 50%; left: 50%; opacity: 0; border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts" id="hearts"></div>
+
+  <div class="content">
+    <h1>Alles Gute zum Vatertag!</h1>
+    <p class="subtitle">Du bist der beste Papa der Welt 🌟</p>
+
+    <div class="gift-wrapper" id="gift" onclick="openGift()" title="Klick mich!">
+      <svg class="gift-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="215" rx="60" ry="8" fill="rgba(0,0,0,0.3)"/>
+        <rect x="25" y="110" width="150" height="100" rx="6" fill="#e74c3c"/>
+        <rect x="25" y="110" width="150" height="100" rx="6" fill="url(#boxShade)" opacity="0.3"/>
+        <rect x="18" y="88" width="164" height="32" rx="6" fill="#c0392b"/>
+        <rect x="88" y="110" width="24" height="100" fill="#ffd700"/>
+        <rect x="18" y="96" width="164" height="14" fill="#ffd700"/>
+        <ellipse cx="72" cy="72" rx="28" ry="16" fill="#ff6b6b" transform="rotate(-30 72 72)"/>
+        <ellipse cx="128" cy="72" rx="28" ry="16" fill="#ff6b6b" transform="rotate(30 128 72)"/>
+        <ellipse cx="72" cy="72" rx="18" ry="9" fill="#e74c3c" transform="rotate(-30 72 72)"/>
+        <ellipse cx="128" cy="72" rx="18" ry="9" fill="#e74c3c" transform="rotate(30 128 72)"/>
+        <circle cx="100" cy="78" r="14" fill="#ffd700"/>
+        <circle cx="100" cy="78" r="8" fill="#ffaa00"/>
+        <text x="38" y="155" font-size="14" fill="rgba(255,255,255,0.4)">✦</text>
+        <text x="148" y="175" font-size="10" fill="rgba(255,255,255,0.3)">✦</text>
+        <defs>
+          <linearGradient id="boxShade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#000" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <p class="click-hint">▼ Tippe auf das Geschenk! ▼</p>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="card" id="card">
+
+      <!-- Screen 1: Intro -->
+      <div class="screen active" id="screen-intro">
+        <span class="intro-emoji">🎁</span>
+        <h2>Oh! Du musst wohl noch ein Rätsel lösen…</h2>
+        <p>Bevor du dein Geschenk erfährst,<br>musst du das Lösungswort erraten!</p>
+        <button class="btn" onclick="showScreen('screen-hangman')">Los geht's! 🔍</button>
+      </div>
+
+      <!-- Screen 2: Hangman -->
+      <div class="screen" id="screen-hangman">
+        <h2>🪢 Hängmann</h2>
+        <p class="hint-text">Tipp: Es entspannt nach einem langen Tag…</p>
+
+        <svg class="hangman-drawing" id="hangman-svg" width="120" height="110" viewBox="0 0 140 130">
+          <line x1="10" y1="125" x2="80" y2="125" stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="125" x2="40" y2="10"  stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="10"  x2="95" y2="10"  stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+          <line x1="95" y1="10"  x2="95" y2="28"  stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+          <circle id="h-head"  cx="95" cy="38" r="10" stroke="#c0392b" stroke-width="3" fill="none" visibility="hidden"/>
+          <line   id="h-body"  x1="95" y1="48" x2="95" y2="85" stroke="#c0392b" stroke-width="3" stroke-linecap="round" visibility="hidden"/>
+          <line   id="h-larm"  x1="95" y1="60" x2="72" y2="75" stroke="#c0392b" stroke-width="3" stroke-linecap="round" visibility="hidden"/>
+          <line   id="h-rarm"  x1="95" y1="60" x2="118" y2="75" stroke="#c0392b" stroke-width="3" stroke-linecap="round" visibility="hidden"/>
+          <line   id="h-lleg"  x1="95" y1="85" x2="72" y2="108" stroke="#c0392b" stroke-width="3" stroke-linecap="round" visibility="hidden"/>
+          <line   id="h-rleg"  x1="95" y1="85" x2="118" y2="108" stroke="#c0392b" stroke-width="3" stroke-linecap="round" visibility="hidden"/>
+        </svg>
+
+        <div class="lives-text" id="lives-text">Leben: ❤️❤️❤️❤️❤️❤️</div>
+        <div class="word-display" id="word-display"></div>
+        <div class="wrong-letters" id="wrong-letters"></div>
+        <div class="keyboard" id="keyboard"></div>
+      </div>
+
+      <!-- Screen 3: Win -->
+      <div class="screen" id="screen-win">
+        <span class="win-emoji">🎉</span>
+        <h2>Richtig! Du hast es erraten!</h2>
+        <p>Dein Geschenk ist eine <strong>Massage</strong> –<br>
+           am Sonntag in <strong>Grömitz</strong>! 🌊✨</p>
+        <p>Du hast dir eine Auszeit verdient,<br>
+           genieß jeden Moment davon.</p>
+        <p class="signature">In Liebe, Antonia & Alicia ❤️</p>
+        <button class="btn" onclick="closeAll()">Schließen ✕</button>
+      </div>
+
+      <!-- Screen 4: Lose -->
+      <div class="screen" id="screen-lose">
+        <span class="lose-emoji">😬</span>
+        <h2>Oje! Leider verloren!</h2>
+        <p>Das Lösungswort war: <strong>MASSAGE</strong></p>
+        <p>Aber keine Sorge – du bekommst sie trotzdem!<br>
+           Am Sonntag in <strong>Grömitz</strong>! 🌊</p>
+        <p class="signature">In Liebe, Antonia & Alicia ❤️</p>
+        <div class="btn-row">
+          <button class="btn btn-red" onclick="resetGame()">Nochmal 🔄</button>
+          <button class="btn" onclick="closeAll()">Schließen ✕</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="confetti-container" id="confetti"></div>
+
+  <script>
+    // ── Floating hearts ──
+    const heartsEl = document.getElementById('hearts');
+    const chars = ['❤️','💛','💙','⭐','✨'];
+    for (let i = 0; i < 15; i++) {
+      const h = document.createElement('span');
+      h.className = 'heart';
+      h.textContent = chars[Math.floor(Math.random() * chars.length)];
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.fontSize = (0.9 + Math.random() * 1.2) + 'rem';
+      h.style.animationDuration = (9 + Math.random() * 10) + 's';
+      h.style.animationDelay = (Math.random() * 12) + 's';
+      heartsEl.appendChild(h);
+    }
+
+    function openGift() {
+      document.getElementById('overlay').classList.add('open');
+    }
+    function closeAll() {
+      document.getElementById('overlay').classList.remove('open');
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'screen-hangman') initGame();
+    }
+
+    // ── Hangman ──
+    const WORD = 'MASSAGE';
+    const MAX_WRONG = 6;
+    const PARTS = ['h-head','h-body','h-larm','h-rarm','h-lleg','h-rleg'];
+    const HEARTS = ['❤️❤️❤️❤️❤️❤️','❤️❤️❤️❤️❤️','❤️❤️❤️❤️','❤️❤️❤️','❤️❤️','❤️','💀'];
+
+    let guessed = new Set();
+    let wrongCount = 0;
+
+    function initGame() {
+      guessed = new Set();
+      wrongCount = 0;
+      PARTS.forEach(id => document.getElementById(id).setAttribute('visibility','hidden'));
+      renderWord(); renderWrong(); renderLives(); buildKeyboard();
+    }
+
+    function renderWord() {
+      const el = document.getElementById('word-display');
+      el.innerHTML = '';
+      WORD.split('').forEach(letter => {
+        const box = document.createElement('div');
+        box.className = 'letter-box' + (guessed.has(letter) ? ' revealed' : '');
+        box.textContent = guessed.has(letter) ? letter : '';
+        el.appendChild(box);
+      });
+    }
+
+    function renderWrong() {
+      const wrong = [...guessed].filter(l => !WORD.includes(l));
+      document.getElementById('wrong-letters').textContent =
+        wrong.length ? 'Falsch: ' + wrong.join(' ') : '';
+    }
+
+    function renderLives() {
+      document.getElementById('lives-text').textContent = 'Leben: ' + HEARTS[wrongCount];
+    }
+
+    function buildKeyboard() {
+      const kb = document.getElementById('keyboard');
+      kb.innerHTML = '';
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+        const btn = document.createElement('button');
+        btn.className = 'key';
+        btn.textContent = letter;
+        if (guessed.has(letter)) {
+          btn.disabled = true;
+          if (!WORD.includes(letter)) btn.classList.add('wrong');
+        }
+        btn.onclick = () => guess(letter);
+        kb.appendChild(btn);
+      });
+    }
+
+    function guess(letter) {
+      if (guessed.has(letter)) return;
+      guessed.add(letter);
+      if (!WORD.includes(letter)) {
+        document.getElementById(PARTS[wrongCount]).setAttribute('visibility','visible');
+        wrongCount++;
+      }
+      renderWord(); renderWrong(); renderLives(); buildKeyboard();
+      if (WORD.split('').every(l => guessed.has(l))) {
+        setTimeout(() => { showScreen('screen-win'); burst(); }, 400);
+      } else if (wrongCount >= MAX_WRONG) {
+        setTimeout(() => showScreen('screen-lose'), 400);
+      }
+    }
+
+    function resetGame() { showScreen('screen-hangman'); }
+
+    // ── Confetti ──
+    function burst() {
+      const container = document.getElementById('confetti');
+      container.innerHTML = '';
+      const colors = ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#96e6a1','#f9ca24','#ff9ff3'];
+      for (let i = 0; i < 80; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        const angle = Math.random() * 360;
+        const dist = 120 + Math.random() * 200;
+        const tx = Math.cos(angle * Math.PI / 180) * dist;
+        const ty = Math.sin(angle * Math.PI / 180) * dist;
+        container.appendChild(p);
+        p.animate([
+          { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0) rotate(${angle*3}deg)`, opacity: 0 }
+        ], { duration: 700 + Math.random() * 600, easing: 'cubic-bezier(0,0,0.2,1)', fill: 'forwards' });
+      }
+      setTimeout(() => container.innerHTML = '', 1500);
+    }
+  </script>
+</body>
+</html>
